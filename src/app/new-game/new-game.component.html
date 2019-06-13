@@ -1,0 +1,22 @@
+<div>
+    <mat-card class="card-md">
+        <mat-card-title>New Game</mat-card-title>
+        <mat-card-content>
+
+            <label id="difficulty-label">Choose your difficulty</label>
+            <mat-radio-group aria-labelledby="difficulty-label"
+                class="example-radio-group">
+                <mat-radio-button class="example-radio-button" value="0"
+                    checked="checked"
+                    (change)="onSelectionChange(0)">Easy</mat-radio-button>
+                <mat-radio-button class="example-radio-button" value="1"
+                    (change)="onSelectionChange(1)">Medium</mat-radio-button>
+                <mat-radio-button class="example-radio-button" value="2"
+                    (change)="onSelectionChange(2)">Hard</mat-radio-button>
+            </mat-radio-group>
+
+            <button mat-raised-button (click)="loadGame()">Start Game</button>
+
+        </mat-card-content>
+    </mat-card>
+</div>

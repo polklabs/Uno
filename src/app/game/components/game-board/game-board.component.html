@@ -1,0 +1,25 @@
+<div style="text-align: center">
+
+  <div fxLayout="column" fxLayoutGap="10px">
+    
+    <!-- Opponent's hand -->
+    <div fxLayout="row wrap" fxLayoutAlign="center" fxLayoutGap="10px">
+      <mat-card style="border: 3px solid; border-color: silver" fxFlex="125px" *ngFor="let card of hands[1].cards">UNO</mat-card>
+    </div>
+
+    <!-- Draw and discard -->
+    <div fxLayout fxLayoutAlign="center" fxLayoutGap="50px">
+      <mat-card class="playing-card" style="border: 3px solid" [style.border-color]="validCards.length==0?'red':'white'" fxFlex="125px" (click)="drawCard()">Draw pile:<br>{{deck.cards.length}} cards</mat-card>
+      <app-card [card]="discard[discard.length-1]"></app-card>
+    </div>
+    <h2>{{message}}</h2>
+
+    <div fxLayout="row wrap" fxLayoutAlign="center" fxLayoutGap="10px">
+      <app-card *ngFor="let card of hands[0].cards"
+        [card]="card">
+      </app-card>
+    </div>
+
+  </div>
+
+</div>

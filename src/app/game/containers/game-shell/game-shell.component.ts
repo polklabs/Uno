@@ -69,10 +69,12 @@ export class GameShellComponent implements OnInit {
   checkValid(){
     let turn = this.turnNumber%this.players;
 
-
+    this.valid = [];
 
     for(let card of this.hands[turn].cards){
-
+      if(card.value == this.lastPlay.value){
+        this.valid.push(card);
+      }
     }
   }
 

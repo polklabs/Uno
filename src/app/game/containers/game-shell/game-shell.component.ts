@@ -1,6 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Inject } from '@angular/core';
 import { Deck, Hand } from 'src/app/shared/assets/piles';
-import { Card, TYPE } from 'src/app/shared/assets/card';
+import { Card, TYPE, COLOR } from 'src/app/shared/assets/card';
+import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
+
+export interface DialogData {
+  color: COLOR;
+}
 
 @Component({
   selector: 'app-game-shell',
@@ -14,6 +19,7 @@ export class GameShellComponent implements OnInit {
   deck: Deck;
   discard: Card[];
   lastPlay: Card;
+  newColor: COLOR = null;
   hands: Hand[];
 
   valid: Card[];
@@ -21,7 +27,7 @@ export class GameShellComponent implements OnInit {
   players: number = 2;
   turnNumber: number = 0;
 
-  constructor() { }
+  constructor(public dialog: MatDialog) { }
 
   ngOnInit() {
 
@@ -40,6 +46,38 @@ export class GameShellComponent implements OnInit {
 
     this.valid = [];
 
+    this.checkValid();
+
+  }
+
+  openDialog(): void {
+    const dialogRef = this.dialog.open(DialogColor, {
+      width: '250px',
+      data: {color: this.newColor}
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      console.log('The dialog was closed');
+      console.log(this.newColor);
+    })
+  }
+
+  endTurn(){
+    this.turnNumber++;
+
+    switch(this.lastPlay.type){
+      case TYPE.SKIP:
+        this.turnNumber++;
+        break;
+      case TYPE.DRAW_TWO:
+        this.dealCards(this.turnNumber%this.players, 2);
+        break;
+      case TYPE.WILD_FOUR:
+        this.dealCards(this.turnNumber%this.players, 4);
+        break;
+    }
+
+    this.checkValid();
   }
 
   startCard(){
@@ -72,10 +110,45 @@ export class GameShellComponent implements OnInit {
     this.valid = [];
 
     for(let card of this.hands[turn].cards){
-      if(card.value == this.lastPlay.value){
-        this.valid.push(card);
+      if(this.lastPlay.type == TYPE.WILD || this.lastPlay.type == TYPE.WILD_FOUR){
+        if(card.color == this.newColor){
+          this.valid.push(card);
+        }
+        else if(card.type == TYPE.WILD){
+          this.valid.push(card);
+        }
+        else if(card.type == TYPE.WILD_FOUR){
+          this.valid.push(card);
+        }
+      }else{
+        if(card.value == this.lastPlay.value){
+          this.valid.push(card);
+        }
+        else if(card.color == this.lastPlay.color){
+          this.valid.push(card);
+        }
+        else if(card.type == TYPE.WILD){
+          this.valid.push(card);
+        }
+        else if(card.type == TYPE.WILD_FOUR){
+          this.valid.push(card);
+        }
       }
     }
   }
 
+}
+
+@Component({
+  selector: 'dialog-color',
+  templateUrl: 'dialog-color.html'
+})
+export class DialogColor {
+  constructor(
+    public dialogRef: MatDialogRef<DialogColor>,
+    @Inject(MAT_DIALOG_DATA) public data: DialogData){}
+
+  onNoClick(): void {
+    this.dialogRef.close();
+  }
 }

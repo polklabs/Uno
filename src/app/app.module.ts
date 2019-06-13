@@ -8,7 +8,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { NavComponent } from './nav/nav.component';
 import { HomeComponent } from './home/home.component';
-import { GameShellComponent } from './game/containers/game-shell/game-shell.component';
+import { GameShellComponent, DialogColor } from './game/containers/game-shell/game-shell.component';
 import { CardComponent } from './game/components/card/card.component';
 import { GameBoardComponent } from './game/components/game-board/game-board.component';
 import { NewGameComponent } from './new-game/new-game.component';
@@ -22,7 +22,8 @@ import { CoreModule } from './core/core.module';
     GameShellComponent,
     CardComponent,
     GameBoardComponent,
-    NewGameComponent
+    NewGameComponent,
+    DialogColor
   ],
   imports: [
     BrowserModule,

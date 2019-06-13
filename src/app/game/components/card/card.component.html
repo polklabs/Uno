@@ -1,40 +1,40 @@
 <!--Normal-->
-<mat-card fxFlex="125px" *ngIf="card!=null && (card.type==2)" style="border: 5px solid" [style.border-color]="valid?'red':'white'" [style.background-color]="card.color">
+<mat-card class="playing-card" fxFlex="125px" *ngIf="card!=null && (card.type==2)" style="border: 5px solid" [style.border-color]="valid?'red':'white'" [style.background-color]="card.color">
   <h2 style="text-align: start">{{card.value}}</h2>
   <h1 style="text-align: center">{{card.value}}</h1>
   <h2 style="text-align: end">{{card.value}}</h2>
 </mat-card>
 
 <!--Skip-->
-<mat-card fxFlex="125px" *ngIf="card!=null && (card.type==3)" style="border: 5px solid" [style.border-color]="valid?'red':'white'" [style.background-color]="card.color">
+<mat-card class="playing-card" fxFlex="125px" *ngIf="card!=null && (card.type==3)" style="border: 5px solid" [style.border-color]="valid?'red':'white'" [style.background-color]="card.color">
   <h4 style="text-align: start"><img src='assets/skip.png'></h4>
   <h3>SKIP</h3>
   <h4 style="text-align: end"><img src='assets/skip.png'></h4>
 </mat-card>
 
 <!--Reverse-->
-<mat-card fxFlex="125px" *ngIf="card!=null && (card.type==5)" style="border: 5px solid" [style.border-color]="valid?'red':'white'" [style.background-color]="card.color">
+<mat-card class="playing-card" fxFlex="125px" *ngIf="card!=null && (card.type==5)" style="border: 5px solid" [style.border-color]="valid?'red':'white'" [style.background-color]="card.color">
   <h4 style="text-align: start"><img src='assets/reverse.png'></h4>
   <h3>REVERSE</h3>
   <h4 style="text-align: end"><img src='assets/reverse.png'></h4>
 </mat-card>
 
 <!--Draw Two-->
-<mat-card fxFlex="125px" *ngIf="card!=null && (card.type==4)" style="border: 5px solid" [style.border-color]="valid?'red':'white'" [style.background-color]="card.color">
+<mat-card class="playing-card" fxFlex="125px" *ngIf="card!=null && (card.type==4)" style="border: 5px solid" [style.border-color]="valid?'red':'white'" [style.background-color]="card.color">
   <h2 style="text-align: start">+2</h2>
   <h1 style="text-align: center">+2</h1>
   <h2 style="text-align: end">+2</h2>
 </mat-card>
 
 <!--Wild-->
-<mat-card fxFlex="125px" *ngIf="card!=null && (card.type==0)" style="border: 5px solid" [style.border-color]="valid?'red':'white'" [style.background-color]="card.color">
+<mat-card class="playing-card" fxFlex="125px" *ngIf="card!=null && (card.type==0)" style="border: 5px solid" [style.border-color]="valid?'red':'white'" [style.background-color]="card.color">
   <h2 style="text-align: start">Wild</h2>
   <h1 style="text-align: center">color</h1>
   <h2 style="text-align: end">Wild</h2>
 </mat-card>
 
 <!--Wild 4-->
-<mat-card fxFlex="125px" *ngIf="card!=null && (card.type==1)" style="border: 5px solid" [style.border-color]="valid?'red':'white'" [style.background-color]="card.color">
+<mat-card class="playing-card" fxFlex="125px" *ngIf="card!=null && (card.type==1)" style="border: 5px solid" [style.border-color]="valid?'red':'white'" [style.background-color]="card.color">
   <h2 style="text-align: start">Wild +4</h2>
   <h1 style="text-align: center">Color</h1>
   <h2 style="text-align: end">Wild +4</h2>

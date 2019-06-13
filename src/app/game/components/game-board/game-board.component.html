@@ -4,8 +4,11 @@
     
     <!-- Opponent's hand -->
     <div fxLayout="row wrap" fxLayoutAlign="center" fxLayoutGap="10px">
-      <mat-card style="border: 3px solid; border-color: silver" fxFlex="125px" *ngFor="let card of hands[1].cards">UNO</mat-card>
-    </div>
+        <app-card *ngFor="let card of hands[1].cards"
+          [card]="card"
+          [valid]="validCards.indexOf(card)!=-1?true:false">
+        </app-card>
+      </div>
 
     <!-- Draw and discard -->
     <div fxLayout fxLayoutAlign="center" fxLayoutGap="50px">
@@ -16,7 +19,8 @@
 
     <div fxLayout="row wrap" fxLayoutAlign="center" fxLayoutGap="10px">
       <app-card *ngFor="let card of hands[0].cards"
-        [card]="card">
+        [card]="card"
+        [valid]="validCards.indexOf(card)!=-1?true:false">
       </app-card>
     </div>
 

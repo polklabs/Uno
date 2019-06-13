@@ -1,6 +1,6 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { Deck, Hand } from 'src/app/shared/assets/piles';
-import { Card } from 'src/app/shared/assets/card';
+import { Card, COLOR } from 'src/app/shared/assets/card';
 
 @Component({
   selector: 'app-game-board',
@@ -18,9 +18,18 @@ export class GameBoardComponent {
   @Input() message: String;
 
   @Output() play = new EventEmitter<Card>();
+  @Output() draw = new EventEmitter<void>();
+
+  newColor: COLOR;
+
+  constructor(){}
 
   playCard(card: Card){
     this.play.emit(card);
+  }
+
+  drawCard(){
+    this.draw.emit();
   }
 
 }

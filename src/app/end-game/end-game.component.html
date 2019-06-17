@@ -1,0 +1,21 @@
+<div style="height: 100%">
+  <div *ngIf="gameService.getWinner() == 0">
+    <h1>You Won!!!</h1>
+  </div>
+
+  <div *ngIf="gameService.getWinner() == 1">
+    <h1>You Lost...</h1>
+  </div>
+
+  <mat-card style="width: 200px">
+    <mat-card-title>Stats:</mat-card-title>
+    <mat-card-content fxLayout="column">
+      <span>Turns taken: {{(gameService.getTurnNumber()/2) | number:'1.0-0'}}</span>
+      <span>Reds: {{gameService.getColorStat()[0]}} <mat-progress-bar [value]="redPercent" color='red'></mat-progress-bar> </span>
+      <span>Greens: {{gameService.getColorStat()[1]}} <mat-progress-bar [value]="greenPercent"></mat-progress-bar> </span>
+      <span>Blues: {{gameService.getColorStat()[2]}} <mat-progress-bar [value]="bluePercent"></mat-progress-bar> </span>
+      <span>Yellows: {{gameService.getColorStat()[3]}} <mat-progress-bar [value]="yellowPercent"></mat-progress-bar> </span>
+    </mat-card-content>
+  </mat-card>
+
+</div>

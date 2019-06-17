@@ -1,5 +1,9 @@
 <div style="text-align: center">
   <img class="logo" src='assets/header_logo.png' alt="Logo">
   <div></div>
-  <button mat-raised-button (click)="startNewGame()">Start New Game</button>
+  <div fxLayout="column" fxLayoutGap="10px" style="width: 10%">
+    <button mat-raised-button fxFlexAlign="center" routerLink='/game' [disabled]="gameService.isNewGame()">Resume Game</button>
+    <button mat-raised-button fxFlexAlign="center" (click)="startNewGame()">Start New Game</button>
+  </div>
+  <h6>This game probably infringes on some copywrite. Sorry</h6>
 </div>

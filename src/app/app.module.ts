@@ -13,6 +13,7 @@ import { CardComponent } from './game/components/card/card.component';
 import { GameBoardComponent } from './game/components/game-board/game-board.component';
 import { NewGameComponent } from './new-game/new-game.component';
 import { CoreModule } from './core/core.module';
+import { EndGameComponent } from './end-game/end-game.component';
 
 @NgModule({
   declarations: [
@@ -23,7 +24,8 @@ import { CoreModule } from './core/core.module';
     CardComponent,
     GameBoardComponent,
     NewGameComponent,
-    DialogColor
+    DialogColor,
+    EndGameComponent
   ],
   imports: [
     BrowserModule,

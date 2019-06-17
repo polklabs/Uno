@@ -20,8 +20,11 @@ export class GameBoardComponent {
   @Input() ended: number;
   @Input() turn: number;
 
+  @Input() uno: boolean;
+
   @Output() play = new EventEmitter<Card>();
   @Output() draw = new EventEmitter<void>();
+  @Output() unoButton = new EventEmitter<void>();
 
   constructor(){}
 
@@ -31,6 +34,10 @@ export class GameBoardComponent {
 
   drawCard(){
     this.draw.emit();
+  }
+
+  pressUno(){
+    this.unoButton.emit();
   }
 
 }

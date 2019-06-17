@@ -1,4 +1,4 @@
-<div style="text-align: center">
+<div class="center" style="text-align: center">
 
   <div fxLayout="column" fxLayoutGap="10px">
     
@@ -15,8 +15,10 @@
       <mat-card class="playing-card" style="border: 3px solid" [style.border-color]="(validCards.length==0 && turn==0)?'orange':'white'" fxFlex="125px" (click)="drawCard()">Draw pile:<br>{{deck}} cards</mat-card>
       <app-card [card]="discard" [color]="newColor"></app-card>
     </div>
-    <h2 *ngIf="ended == -1">{{message}}</h2><mat-progress-bar mode="indeterminate" *ngIf="turn == 1"></mat-progress-bar>
+    <h2 *ngIf="ended == -1">{{message}}</h2>
+    <mat-progress-bar mode="indeterminate" *ngIf="turn == 1" fxFlexAlign="center" style="width: 200px"></mat-progress-bar>
     <h2 *ngIf="ended >= 0">Player {{ended+1}} WON!</h2>
+    <button mat-raised-button fxFlexAlign="center" style="width: 75px" [disabled]="!uno" [style.background-color]="uno?'green':'white'" (click)="pressUno()">!UNO!</button>
 
     <div fxLayout="row wrap" fxLayoutAlign="center" fxLayoutGap="10px">
       <app-card *ngFor="let card of hands[0]"

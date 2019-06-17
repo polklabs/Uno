@@ -1,8 +1,9 @@
 import { Component, OnInit, Inject } from '@angular/core';
-import { Deck, Hand } from 'src/app/shared/assets/piles';
 import { Card, TYPE, COLOR } from 'src/app/shared/assets/card';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { GameService } from '../../game.service';
+import { AiService } from '../ai/ai.service';
+import { Router } from '@angular/router';
 
 export interface DialogData {
   color: COLOR;
@@ -17,16 +18,23 @@ export class GameShellComponent implements OnInit {
 
   messages: String[] = ["Player one's turn.", "Player two's turn."];
 
+  uno: boolean;
+
   constructor(public gameService: GameService,
+              public ai: AiService,
+              public router: Router,
               public dialog: MatDialog) { }
 
   ngOnInit() {
 
-    for(var i = 0; i < this.gameService.getPlayers(); i++){
-      this.dealCards(i, 7);
-    }
+    if(this.gameService.isNewGame()){
+      for(var i = 0; i < this.gameService.getPlayers(); i++){
+        this.dealCards(i, 7);
+      }
 
-    this.startCard();
+      this.startCard();
+      this.gameService.notNewGame();
+    }
 
     this.checkValid();
 
@@ -42,9 +50,14 @@ export class GameShellComponent implements OnInit {
       this.gameService.setCurrentColor(result);
       console.log('The dialog was closed');
       console.log(this.gameService.getCurrentColor());
-      //this.checkValid();
       this.endTurn();
     })
+  }
+
+  play(card: Card): void {
+    if(this.gameService.getTurn() == 0){
+      this.playCard(card);
+    }
   }
 
   playCard(card: Card): void {
@@ -78,10 +91,12 @@ export class GameShellComponent implements OnInit {
   endTurn(){
     if(this.gameService.getHandLength(0) == 0){
       this.gameService.setWinner(0);
+      this.router.navigateByUrl('end');
       return;
     }
-    if(this.gameService.getHandLength(0) == 0){
+    if(this.gameService.getHandLength(1) == 0){
       this.gameService.setWinner(1);
+      this.router.navigateByUrl('end');
       return;
     }
 
@@ -102,13 +117,15 @@ export class GameShellComponent implements OnInit {
         break;
     }
 
+    this.checkUno(this.gameService.getOpp());
+
     this.checkValid();
 
     if(turn == 1){
       console.log("Start AI turn");
       setTimeout(() => {
         this.aiTurn();
-      }, Math.round(Math.random()*3000)+500);
+      }, Math.round(Math.random()*2000)+500);
     }
   }
 
@@ -118,54 +135,8 @@ export class GameShellComponent implements OnInit {
     while(this.gameService.getValidLength() == 0){
       this.drawCard();
     }
-    let randomIndex = Math.ceil(Math.random() * this.gameService.getValidLength())-1;
-    let card = this.gameService.getValidCard(randomIndex);
-    console.log(card);
-
-    if(card.type == TYPE.WILD || card.type == TYPE.WILD_FOUR){
-      let rgby: number[] = [0,0,0,0];
-      for(let c of this.gameService.getCardsInHand(1)){
-        switch(c.color){
-          case COLOR.RED:
-            rgby[0]++;
-            break;
-          case COLOR.GREEN:
-            rgby[1]++;
-            break;
-          case COLOR.BLUE:
-            rgby[2]++;
-            break;
-          case COLOR.YELLOW:
-            rgby[3]++;
-            break;
-        }
-      }
-
-      //Choose whichever color is most common, default red
-      let i = rgby.indexOf(Math.max(...rgby));
-      switch(i){
-        case 0:
-          this.gameService.setCurrentColor(COLOR.RED);
-          break;
-        case 1:
-            this.gameService.setCurrentColor(COLOR.GREEN);
-          break;
-        case 2:
-            this.gameService.setCurrentColor(COLOR.BLUE);
-          break;
-        case 3:
-            this.gameService.setCurrentColor(COLOR.YELLOW);
-          break;
-        default:
-            this.gameService.setCurrentColor(COLOR.RED);
-      }
-
-    }
-    else{
-      this.gameService.setCurrentColor(card.color);
-    }
-
-    this.playCard(card);
+    
+    this.playCard(this.ai.getMove(this.gameService));
   }
 
   startCard(){
@@ -186,6 +157,11 @@ export class GameShellComponent implements OnInit {
 
   dealCards(player: number, cards: number){
     for(var i = 0; i < cards; i++){
+
+      if(this.gameService.getDeckLength() == 0){
+        this.gameService.shuffleDiscard();
+      }
+
       this.gameService.addCardToHand(this.gameService.removeCardFromDeck(), player);
     }
   }
@@ -224,8 +200,29 @@ export class GameShellComponent implements OnInit {
     }
   }
 
-  checkWin(){
+  checkUno(player: number){
+    if(this.gameService.getCardsInHand(player).length == 1){
+      this.uno = true;
+    }
 
+    if(this.uno){
+      let t = Math.round(Math.random()*500)+1000;
+      console.log(`timeout: ${t}`);
+      setTimeout(() => {
+        this.UNO(1);
+      }, t);
+    }
+  }
+
+  UNO(player: number){
+    let turn = this.gameService.getTurn();
+    if(this.uno){
+      if(turn == player){
+        this.dealCards(this.gameService.getOpp(), 2);
+      }
+    }
+    this.uno = false;
+    console.log(`UNO: ${player}`);
   }
 
 }

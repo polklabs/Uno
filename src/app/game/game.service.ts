@@ -7,6 +7,8 @@ import { Card, COLOR, TYPE } from '../shared/assets/card';
 })
 export class GameService {
 
+  private newGame: boolean;
+
   private deck: Deck;
   private discard: Card[];
   private currentColor: COLOR;
@@ -18,7 +20,18 @@ export class GameService {
   private players: number;
   private turnNumber: number;
 
+  /*For Stats*/
+  stat_color: number[];
+  stat_value: number[];
+  stat_wild: number; 
+
   constructor() { 
+    this.init();
+  }
+
+  init() {
+    this.newGame = true;
+
     this.currentColor = null;
     this.isEnded = -1;
     this.players = 2;
@@ -35,6 +48,18 @@ export class GameService {
     }
 
     this.valid = [];
+
+    /*Init Stats*/
+    this.stat_color = [0,0,0,0];
+    this.stat_value = ([...Array(10).fill(0)]);
+    this.stat_wild = 0;
+  }
+
+  isNewGame(): boolean {
+    return this.newGame;
+  }
+  notNewGame(): void {
+    this.newGame = false;
   }
 
   /* Deck */
@@ -60,8 +85,48 @@ export class GameService {
     return this.deck.cards.length;
   }
 
+  addStat(card: Card): void {
+    if(card.color != null){
+      switch(card.color){
+        case COLOR.RED:
+          this.stat_color[0]++;
+          break;
+        case COLOR.GREEN:
+          this.stat_color[1]++;
+          break;
+        case COLOR.BLUE:
+          this.stat_color[2]++;
+          break;
+        case COLOR.YELLOW:
+          this.stat_color[3]++;
+          break;
+      }
+    }
+    if(card.value >= 0){
+      this.stat_value[card.value]++;
+    }
+
+    if(card.type == TYPE.WILD || card.type == TYPE.WILD_FOUR){
+      this.stat_wild++;
+    }
+  }
+  getColorStat(): number[] {
+    return this.stat_color;
+  }
+  getValueStat(): number[] {
+    return this.stat_value;
+  }
+  getWildStat(): number {
+    return this.stat_wild;
+  }
+
   /* Discard */
   addCardToDiscard(card: Card): Card {
+
+    if(this.getTurn() == 0){
+      this.addStat(card);
+    }
+
     this.discard.push(card);
     if(card.type != TYPE.WILD && card.type != TYPE.WILD_FOUR){
       this.currentColor = card.color; 
@@ -80,7 +145,7 @@ export class GameService {
   setCurrentColor(color: COLOR): COLOR{
     if(this.getLastCardInDiscard().type == TYPE.WILD || 
        this.getLastCardInDiscard().type == TYPE.WILD_FOUR){
-         
+
       this.currentColor = color;
       return this.currentColor;
     }
@@ -151,5 +216,8 @@ export class GameService {
   }
   getTurn(): number {
     return this.turnNumber % this.players;
+  }
+  getOpp(): number {
+    return (this.turnNumber+1) % this.players;
   }
 }

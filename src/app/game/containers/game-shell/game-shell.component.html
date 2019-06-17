@@ -7,6 +7,8 @@
   [message]="messages[gameService.getTurn()]"
   [ended]="gameService.getWinner()"
   [turn]="gameService.getTurn()"
+  [uno]="uno"
   (draw)="drawCard()"
-  (play)="playCard($event)">
+  (play)="play($event)"
+  (unoButton)="UNO(0)">
 </app-game-board>

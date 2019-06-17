@@ -14,13 +14,12 @@ export class GameBoardComponent {
   @Input() hands: Hand[];
 
   @Input() validCards: Card[];
+  @Input() newColor: COLOR;
 
   @Input() message: String;
 
   @Output() play = new EventEmitter<Card>();
   @Output() draw = new EventEmitter<void>();
-
-  newColor: COLOR;
 
   constructor(){}
 

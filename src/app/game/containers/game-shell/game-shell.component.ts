@@ -53,31 +53,130 @@ export class GameShellComponent implements OnInit {
   openDialog(): void {
     const dialogRef = this.dialog.open(DialogColor, {
       width: '250px',
-      data: {color: this.newColor}
+      data: {color: COLOR.RED}
     });
 
     dialogRef.afterClosed().subscribe(result => {
+      this.newColor = result;
       console.log('The dialog was closed');
       console.log(this.newColor);
+      //this.checkValid();
+      this.endTurn();
     })
+  }
+
+  playCard(card: Card): void {
+    console.log("Play");
+
+    let turn  = this.turnNumber%this.players;
+
+    this.lastPlay = card;
+    this.hands[turn].removeCard(card);
+    this.discard.push(card);
+
+    if(turn == 0){
+      if(card.type == TYPE.WILD || card.type == TYPE.WILD_FOUR){
+        this.openDialog();
+        return;
+      }
+
+      this.newColor = card.color;
+    }
+
+    this.endTurn();
+  }
+
+  drawCard(): void {
+    console.log("Draw");
+    if(this.valid.length == 0){
+      let turn = this.turnNumber%this.players;
+      this.dealCards(turn, 1);
+      this.checkValid();
+    }
   }
 
   endTurn(){
     this.turnNumber++;
 
+    let turn = this.turnNumber%this.players;
+
     switch(this.lastPlay.type){
       case TYPE.SKIP:
         this.turnNumber++;
+        turn = this.turnNumber%this.players;
         break;
       case TYPE.DRAW_TWO:
-        this.dealCards(this.turnNumber%this.players, 2);
+        this.dealCards(turn, 2);
         break;
       case TYPE.WILD_FOUR:
-        this.dealCards(this.turnNumber%this.players, 4);
+        this.dealCards(turn, 4);
         break;
     }
 
     this.checkValid();
+
+    if(turn == 1){
+      console.log("Start AI turn");
+      setTimeout(() => {
+        this.aiTurn();
+      }, Math.round(Math.random()*3000)+500);
+    }
+  }
+
+  aiTurn(){
+    console.log("AI TURN");
+
+    while(this.valid.length == 0){
+      this.drawCard();
+    }
+    let randomIndex = Math.ceil(Math.random() * this.valid.length)-1;
+    let card = this.valid[randomIndex];
+    console.log(card);
+
+    if(card.type == TYPE.WILD || card.type == TYPE.WILD_FOUR){
+      let rgby: number[] = [0,0,0,0];
+      for(let c of this.hands[1].cards){
+        switch(c.color){
+          case COLOR.RED:
+            rgby[0]++;
+            break;
+          case COLOR.GREEN:
+            rgby[1]++;
+            break;
+          case COLOR.BLUE:
+            rgby[2]++;
+            break;
+          case COLOR.YELLOW:
+            rgby[3]++;
+            break;
+        }
+      }
+
+      //Choose whichever color is most common, default red
+      let i = rgby.indexOf(Math.max(...rgby));
+      switch(i){
+        case 0:
+          this.newColor = COLOR.RED;
+          break;
+        case 1:
+          this.newColor = COLOR.GREEN;
+          break;
+        case 2:
+          this.newColor = COLOR.BLUE;
+          break;
+        case 3:
+          this.newColor = COLOR.YELLOW;
+          break;
+        default:
+          this.newColor = COLOR.RED;
+      }
+
+    }
+    else{
+      this.newColor = card.color;
+    }
+
+    this.playCard(card);
   }
 
   startCard(){
@@ -88,14 +187,14 @@ export class GameShellComponent implements OnInit {
   
     while(card.type == TYPE.WILD || card.type == TYPE.WILD_FOUR){
       console.log("Wild Card");
-      let randomIndex = Math.floor(Math.random() * this.deck.cards.length-1);
+      let randomIndex = Math.floor(Math.random() * this.deck.cards.length)-1;
       this.deck.cards.splice(randomIndex, 0, card);
       card = this.deck.pickCard();
     }
     
     this.discard.push(card);
     this.lastPlay = card;
-
+    this.newColor = this.lastPlay.color;
   }
 
   dealCards(player: number, cards: number){
@@ -124,7 +223,7 @@ export class GameShellComponent implements OnInit {
         if(card.value == this.lastPlay.value){
           this.valid.push(card);
         }
-        else if(card.color == this.lastPlay.color){
+        else if(card.color == this.newColor){
           this.valid.push(card);
         }
         else if(card.type == TYPE.WILD){
@@ -148,7 +247,24 @@ export class DialogColor {
     public dialogRef: MatDialogRef<DialogColor>,
     @Inject(MAT_DIALOG_DATA) public data: DialogData){}
 
+  onSelectionChange(color: number) {
+    switch(color){
+      case 0:
+        this.data.color = COLOR.RED;
+        break;
+      case 1:
+          this.data.color = COLOR.GREEN;
+          break;
+      case 2:
+        this.data.color = COLOR.BLUE;
+        break;
+      case 3:
+        this.data.color = COLOR.YELLOW;
+        break;
+    }
+  }
+
   onNoClick(): void {
-    this.dialogRef.close();
+    this.dialogRef.close(COLOR.RED);
   }
 }

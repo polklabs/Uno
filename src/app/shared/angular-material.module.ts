@@ -17,6 +17,7 @@ import { MatSliderModule } from '@angular/material/slider';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatCardModule } from '@angular/material/card';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatDialogModule } from '@angular/material/dialog';
 
 import { MatNativeDateModule } from '@angular/material';
 // import { MatMomentDateModule } from '@angular/material-moment-adapter';
@@ -35,7 +36,8 @@ import { MatNativeDateModule } from '@angular/material';
         MatSlideToggleModule,
         MatNativeDateModule,
         MatCardModule,
-        MatProgressBarModule
+        MatProgressBarModule,
+        MatDialogModule
     ],
     exports: [
         LayoutModule,
@@ -50,7 +52,8 @@ import { MatNativeDateModule } from '@angular/material';
         MatSlideToggleModule,
         MatNativeDateModule,
         MatCardModule,
-        MatProgressBarModule
+        MatProgressBarModule,
+        MatDialogModule
     ]
   })
 export class AngularMaterialModule {}

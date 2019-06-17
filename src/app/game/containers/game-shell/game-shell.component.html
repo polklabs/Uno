@@ -3,5 +3,8 @@
   [discard]="discard"
   [hands]="hands"
   [validCards]="valid"
-  [message]="messages[turnNumber%players]">
+  [newColor]="newColor"
+  [message]="messages[turnNumber%players]"
+  (draw)="drawCard()"
+  (play)="playCard($event)">
 </app-game-board>

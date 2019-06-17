@@ -6,21 +6,23 @@
     <div fxLayout="row wrap" fxLayoutAlign="center" fxLayoutGap="10px">
         <app-card *ngFor="let card of hands[1].cards"
           [card]="card"
-          [valid]="validCards.indexOf(card)!=-1?true:false">
+          [valid]="validCards.indexOf(card)!=-1?true:false"
+          (click)="playCard(card)">
         </app-card>
       </div>
 
     <!-- Draw and discard -->
     <div fxLayout fxLayoutAlign="center" fxLayoutGap="50px">
       <mat-card class="playing-card" style="border: 3px solid" [style.border-color]="validCards.length==0?'red':'white'" fxFlex="125px" (click)="drawCard()">Draw pile:<br>{{deck.cards.length}} cards</mat-card>
-      <app-card [card]="discard[discard.length-1]"></app-card>
+      <app-card [card]="discard[discard.length-1]" [color]="newColor"></app-card>
     </div>
     <h2>{{message}}</h2>
 
     <div fxLayout="row wrap" fxLayoutAlign="center" fxLayoutGap="10px">
       <app-card *ngFor="let card of hands[0].cards"
         [card]="card"
-        [valid]="validCards.indexOf(card)!=-1?true:false">
+        [valid]="validCards.indexOf(card)!=-1?true:false"
+        (click)="playCard(card)">
       </app-card>
     </div>
 

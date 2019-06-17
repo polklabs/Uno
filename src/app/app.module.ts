@@ -38,6 +38,7 @@ import { CoreModule } from './core/core.module';
     FlexLayoutModule
   ],
   providers: [],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
+  entryComponents: [DialogColor]
 })
 export class AppModule { }

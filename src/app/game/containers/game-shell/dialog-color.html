@@ -1,1 +1,21 @@
-<h1>Pick a color.</h1>
+<div fxLayout="column">
+    <h2>PICK A COLOR</h2>
+    <mat-radio-group aria-labelledby="difficulty-label"
+        class="example-radio-group">
+        <div fxLayout="column">
+        <mat-radio-button class="example-radio-button" value="0"
+            checked="checked"
+            (change)="onSelectionChange(0)">Red</mat-radio-button>
+        <mat-radio-button class="example-radio-button" value="1"
+            (change)="onSelectionChange(1)">Green</mat-radio-button>
+        <mat-radio-button class="example-radio-button" value="2"
+            (change)="onSelectionChange(2)">Blue</mat-radio-button>
+        <mat-radio-button class="example-radio-button" value="3"
+            (change)="onSelectionChange(3)">Yellow</mat-radio-button>
+        </div>
+    </mat-radio-group>
+
+    <h3></h3>
+
+    <button mat-raised-button [mat-dialog-close]="data.color">Change Color</button>
+</div>

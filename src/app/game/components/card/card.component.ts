@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { Card } from 'src/app/shared/assets/card';
+import { Card, COLOR } from 'src/app/shared/assets/card';
 
 @Component({
   selector: 'app-card',
@@ -10,5 +10,5 @@ export class CardComponent {
 
   @Input() card: Card;
   @Input() valid: boolean;
-
+  @Input() color: COLOR;
 }

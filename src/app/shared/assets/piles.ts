@@ -69,6 +69,10 @@ export class Deck{
         return this.cards.pop();
     }
 
+    addCards(cards: Card[]){
+        this.cards.push(...cards);
+    }
+
     shuffle(){
         console.log("Shuffling Cards.");
 

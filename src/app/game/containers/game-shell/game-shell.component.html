@@ -1,10 +1,12 @@
 <app-game-board
-  [deck]="deck"
-  [discard]="discard"
-  [hands]="hands"
-  [validCards]="valid"
-  [newColor]="newColor"
-  [message]="messages[turnNumber%players]"
+  [deck]="gameService.getDeckLength()"
+  [discard]="gameService.getLastCardInDiscard()"
+  [hands]="[gameService.getCardsInHand(0), gameService.getCardsInHand(1)]"
+  [validCards]="gameService.getValidCards()"
+  [newColor]="gameService.getCurrentColor()"
+  [message]="messages[gameService.getTurn()]"
+  [ended]="gameService.getWinner()"
+  [turn]="gameService.getTurn()"
   (draw)="drawCard()"
   (play)="playCard($event)">
 </app-game-board>

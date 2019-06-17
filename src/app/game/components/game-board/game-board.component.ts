@@ -9,14 +9,16 @@ import { Card, COLOR } from 'src/app/shared/assets/card';
 })
 export class GameBoardComponent {
 
-  @Input() deck: Deck;
-  @Input() discard: Card[];
-  @Input() hands: Hand[];
+  @Input() deck: number;
+  @Input() discard: Card;
+  @Input() hands: Card[];
 
   @Input() validCards: Card[];
   @Input() newColor: COLOR;
 
   @Input() message: String;
+  @Input() ended: number;
+  @Input() turn: number;
 
   @Output() play = new EventEmitter<Card>();
   @Output() draw = new EventEmitter<void>();

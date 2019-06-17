@@ -11,4 +11,5 @@ export class CardComponent {
   @Input() card: Card;
   @Input() valid: boolean;
   @Input() color: COLOR;
+  @Input() hidden: boolean = false;
 }

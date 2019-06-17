@@ -2,6 +2,7 @@ import { Component, OnInit, Inject } from '@angular/core';
 import { Deck, Hand } from 'src/app/shared/assets/piles';
 import { Card, TYPE, COLOR } from 'src/app/shared/assets/card';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
+import { GameService } from '../../game.service';
 
 export interface DialogData {
   color: COLOR;
@@ -16,35 +17,16 @@ export class GameShellComponent implements OnInit {
 
   messages: String[] = ["Player one's turn.", "Player two's turn."];
 
-  deck: Deck;
-  discard: Card[];
-  lastPlay: Card;
-  newColor: COLOR = null;
-  hands: Hand[];
-
-  valid: Card[];
-
-  players: number = 2;
-  turnNumber: number = 0;
-
-  constructor(public dialog: MatDialog) { }
+  constructor(public gameService: GameService,
+              public dialog: MatDialog) { }
 
   ngOnInit() {
 
-    this.deck = new Deck();
-    this.deck.shuffle();
-
-    this.discard = [];
-
-    this.hands = [];
-    for(var i = 0; i < this.players; i++){
-      this.hands[i] = new Hand(i);
+    for(var i = 0; i < this.gameService.getPlayers(); i++){
       this.dealCards(i, 7);
     }
 
     this.startCard();
-
-    this.valid = [];
 
     this.checkValid();
 
@@ -57,9 +39,9 @@ export class GameShellComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      this.newColor = result;
+      this.gameService.setCurrentColor(result);
       console.log('The dialog was closed');
-      console.log(this.newColor);
+      console.log(this.gameService.getCurrentColor());
       //this.checkValid();
       this.endTurn();
     })
@@ -68,11 +50,10 @@ export class GameShellComponent implements OnInit {
   playCard(card: Card): void {
     console.log("Play");
 
-    let turn  = this.turnNumber%this.players;
+    let turn  = this.gameService.getTurn();
 
-    this.lastPlay = card;
-    this.hands[turn].removeCard(card);
-    this.discard.push(card);
+    this.gameService.addCardToDiscard(card);
+    this.gameService.removeCardFromHand(card, turn);
 
     if(turn == 0){
       if(card.type == TYPE.WILD || card.type == TYPE.WILD_FOUR){
@@ -80,7 +61,7 @@ export class GameShellComponent implements OnInit {
         return;
       }
 
-      this.newColor = card.color;
+      this.gameService.setCurrentColor(card.color);
     }
 
     this.endTurn();
@@ -88,22 +69,30 @@ export class GameShellComponent implements OnInit {
 
   drawCard(): void {
     console.log("Draw");
-    if(this.valid.length == 0){
-      let turn = this.turnNumber%this.players;
-      this.dealCards(turn, 1);
+    if(this.gameService.getValidLength() == 0){
+      this.dealCards(this.gameService.getTurn(), 1);
       this.checkValid();
     }
   }
 
   endTurn(){
-    this.turnNumber++;
+    if(this.gameService.getHandLength(0) == 0){
+      this.gameService.setWinner(0);
+      return;
+    }
+    if(this.gameService.getHandLength(0) == 0){
+      this.gameService.setWinner(1);
+      return;
+    }
 
-    let turn = this.turnNumber%this.players;
+    this.gameService.increaseTurnNumber();
 
-    switch(this.lastPlay.type){
+    let turn = this.gameService.getTurn();
+
+    switch(this.gameService.getLastCardInDiscard().type){
       case TYPE.SKIP:
-        this.turnNumber++;
-        turn = this.turnNumber%this.players;
+        this.gameService.increaseTurnNumber();
+        turn = this.gameService.getTurn();
         break;
       case TYPE.DRAW_TWO:
         this.dealCards(turn, 2);
@@ -126,16 +115,16 @@ export class GameShellComponent implements OnInit {
   aiTurn(){
     console.log("AI TURN");
 
-    while(this.valid.length == 0){
+    while(this.gameService.getValidLength() == 0){
       this.drawCard();
     }
-    let randomIndex = Math.ceil(Math.random() * this.valid.length)-1;
-    let card = this.valid[randomIndex];
+    let randomIndex = Math.ceil(Math.random() * this.gameService.getValidLength())-1;
+    let card = this.gameService.getValidCard(randomIndex);
     console.log(card);
 
     if(card.type == TYPE.WILD || card.type == TYPE.WILD_FOUR){
       let rgby: number[] = [0,0,0,0];
-      for(let c of this.hands[1].cards){
+      for(let c of this.gameService.getCardsInHand(1)){
         switch(c.color){
           case COLOR.RED:
             rgby[0]++;
@@ -156,24 +145,24 @@ export class GameShellComponent implements OnInit {
       let i = rgby.indexOf(Math.max(...rgby));
       switch(i){
         case 0:
-          this.newColor = COLOR.RED;
+          this.gameService.setCurrentColor(COLOR.RED);
           break;
         case 1:
-          this.newColor = COLOR.GREEN;
+            this.gameService.setCurrentColor(COLOR.GREEN);
           break;
         case 2:
-          this.newColor = COLOR.BLUE;
+            this.gameService.setCurrentColor(COLOR.BLUE);
           break;
         case 3:
-          this.newColor = COLOR.YELLOW;
+            this.gameService.setCurrentColor(COLOR.YELLOW);
           break;
         default:
-          this.newColor = COLOR.RED;
+            this.gameService.setCurrentColor(COLOR.RED);
       }
 
     }
     else{
-      this.newColor = card.color;
+      this.gameService.setCurrentColor(card.color);
     }
 
     this.playCard(card);
@@ -183,57 +172,60 @@ export class GameShellComponent implements OnInit {
     
     let card: Card;
     
-    card = this.deck.pickCard();
+    card = this.gameService.removeCardFromDeck();
   
     while(card.type == TYPE.WILD || card.type == TYPE.WILD_FOUR){
       console.log("Wild Card");
-      let randomIndex = Math.floor(Math.random() * this.deck.cards.length)-1;
-      this.deck.cards.splice(randomIndex, 0, card);
-      card = this.deck.pickCard();
+      this.gameService.shuffleIntoDeck(card);
+      card = this.gameService.removeCardFromDeck();
     }
     
-    this.discard.push(card);
-    this.lastPlay = card;
-    this.newColor = this.lastPlay.color;
+    this.gameService.addCardToDiscard(card);
+    this.gameService.setCurrentColor(card.color);
   }
 
   dealCards(player: number, cards: number){
     for(var i = 0; i < cards; i++){
-      this.hands[player].addCard(this.deck.pickCard());
+      this.gameService.addCardToHand(this.gameService.removeCardFromDeck(), player);
     }
   }
 
   checkValid(){
-    let turn = this.turnNumber%this.players;
+    let turn = this.gameService.getTurn()
 
-    this.valid = [];
+    this.gameService.resetValidCards();
 
-    for(let card of this.hands[turn].cards){
-      if(this.lastPlay.type == TYPE.WILD || this.lastPlay.type == TYPE.WILD_FOUR){
-        if(card.color == this.newColor){
-          this.valid.push(card);
+    for(let card of this.gameService.getCardsInHand(turn)){
+      if(this.gameService.getLastCardInDiscard().type == TYPE.WILD || 
+         this.gameService.getLastCardInDiscard().type == TYPE.WILD_FOUR){
+        if(card.color == this.gameService.getCurrentColor()){
+          this.gameService.addValidCard(card);
         }
         else if(card.type == TYPE.WILD){
-          this.valid.push(card);
+          this.gameService.addValidCard(card);
         }
         else if(card.type == TYPE.WILD_FOUR){
-          this.valid.push(card);
+          this.gameService.addValidCard(card);
         }
       }else{
-        if(card.value == this.lastPlay.value){
-          this.valid.push(card);
+        if(card.value == this.gameService.getLastCardInDiscard().value){
+          this.gameService.addValidCard(card);
         }
-        else if(card.color == this.newColor){
-          this.valid.push(card);
+        else if(card.color == this.gameService.getCurrentColor()){
+          this.gameService.addValidCard(card);
         }
         else if(card.type == TYPE.WILD){
-          this.valid.push(card);
+          this.gameService.addValidCard(card);
         }
         else if(card.type == TYPE.WILD_FOUR){
-          this.valid.push(card);
+          this.gameService.addValidCard(card);
         }
       }
     }
+  }
+
+  checkWin(){
+
   }
 
 }

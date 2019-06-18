@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { Deck, Hand } from '../shared/assets/piles';
-import { Card, COLOR, TYPE } from '../shared/assets/card';
+import { Deck, Hand } from '../models/piles';
+import { Card, COLOR, TYPE } from '../models/card';
 
 @Injectable({
   providedIn: 'root'

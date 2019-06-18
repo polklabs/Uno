@@ -1,8 +1,8 @@
 import { Component, OnInit, Inject } from '@angular/core';
-import { Card, TYPE, COLOR } from 'src/app/shared/assets/card';
+import { Card, TYPE, COLOR } from 'src/app/models/card';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
-import { GameService } from '../../game.service';
-import { AiService } from '../ai/ai.service';
+import { GameService } from '../../../services/game.service';
+import { AiService } from '../../../services/ai.service';
 import { Router } from '@angular/router';
 
 export interface DialogData {
@@ -48,8 +48,6 @@ export class GameShellComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(result => {
       this.gameService.setCurrentColor(result);
-      console.log('The dialog was closed');
-      console.log(this.gameService.getCurrentColor());
       this.endTurn();
     })
   }
@@ -61,9 +59,10 @@ export class GameShellComponent implements OnInit {
   }
 
   playCard(card: Card): void {
-    console.log("Play");
 
     let turn  = this.gameService.getTurn();
+
+    console.log(`Player ${turn} playing ${card}`);
 
     this.gameService.addCardToDiscard(card);
     this.gameService.removeCardFromHand(card, turn);
@@ -81,7 +80,6 @@ export class GameShellComponent implements OnInit {
   }
 
   drawCard(): void {
-    console.log("Draw");
     if(this.gameService.getValidLength() == 0){
       this.dealCards(this.gameService.getTurn(), 1);
       this.checkValid();
@@ -122,15 +120,13 @@ export class GameShellComponent implements OnInit {
     this.checkValid();
 
     if(turn == 1){
-      console.log("Start AI turn");
       setTimeout(() => {
         this.aiTurn();
-      }, Math.round(Math.random()*2000)+500);
+      }, Math.round(Math.random()*1500*this.ai.difficulty)+1000);
     }
   }
 
   aiTurn(){
-    console.log("AI TURN");
 
     while(this.gameService.getValidLength() == 0){
       this.drawCard();
@@ -140,13 +136,13 @@ export class GameShellComponent implements OnInit {
   }
 
   startCard(){
+    console.log("Finding suitable starting card.");
     
     let card: Card;
     
     card = this.gameService.removeCardFromDeck();
   
     while(card.type == TYPE.WILD || card.type == TYPE.WILD_FOUR){
-      console.log("Wild Card");
       this.gameService.shuffleIntoDeck(card);
       card = this.gameService.removeCardFromDeck();
     }
@@ -156,6 +152,8 @@ export class GameShellComponent implements OnInit {
   }
 
   dealCards(player: number, cards: number){
+    console.log(`Dealing ${cards} cards to player ${player}`);
+
     for(var i = 0; i < cards; i++){
 
       if(this.gameService.getDeckLength() == 0){
@@ -202,12 +200,11 @@ export class GameShellComponent implements OnInit {
 
   checkUno(player: number){
     if(this.gameService.getCardsInHand(player).length == 1){
-      this.uno = true;
-    }
+      console.log('Starting UNO countdown.');
 
-    if(this.uno){
-      let t = Math.round(Math.random()*500)+1000;
-      console.log(`timeout: ${t}`);
+      this.uno = true;
+
+      let t = Math.round(Math.random()*500)+(333*(2-this.ai.difficulty)*1.5);
       setTimeout(() => {
         this.UNO(1);
       }, t);
@@ -222,7 +219,6 @@ export class GameShellComponent implements OnInit {
       }
     }
     this.uno = false;
-    console.log(`UNO: ${player}`);
   }
 
 }

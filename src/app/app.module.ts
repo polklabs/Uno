@@ -14,6 +14,7 @@ import { GameBoardComponent } from './game/components/game-board/game-board.comp
 import { NewGameComponent } from './new-game/new-game.component';
 import { CoreModule } from './core/core.module';
 import { EndGameComponent } from './end-game/end-game.component';
+import { RulesComponent } from './rules/rules.component';
 
 @NgModule({
   declarations: [
@@ -25,7 +26,8 @@ import { EndGameComponent } from './end-game/end-game.component';
     GameBoardComponent,
     NewGameComponent,
     DialogColor,
-    EndGameComponent
+    EndGameComponent,
+    RulesComponent
   ],
   imports: [
     BrowserModule,

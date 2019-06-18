@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { GameService } from '../game/game.service';
+import { GameService } from '../services/game.service';
 
 @Component({
   selector: 'app-home',

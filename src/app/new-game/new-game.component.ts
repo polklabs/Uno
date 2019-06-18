@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { GameService } from '../game/game.service';
-import { AiService } from '../game/containers/ai/ai.service';
+import { GameService } from '../services/game.service';
+import { AiService } from '../services/ai.service';
 
 @Component({
   selector: 'app-new-game',
@@ -25,7 +25,9 @@ export class NewGameComponent implements OnInit {
 
   loadGame(): void {
     console.log(`Loading game with difficulty ${this.difficulty}`);
+    console.log('Initializing cards');
     this.gameService.init();
+    console.log('Setting difficulty.');
     this.ai.setDifficulty(this.difficulty);
     this.router.navigateByUrl('game');
   }

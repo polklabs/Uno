@@ -12,7 +12,7 @@
                 <mat-radio-button class="example-radio-button" value="1"
                     (change)="onSelectionChange(1)">Medium</mat-radio-button>
                 <mat-radio-button class="example-radio-button" value="2"
-                    (change)="onSelectionChange(2)">Hard</mat-radio-button>
+                    (change)="onSelectionChange(2)" [disabled]="true">Hard</mat-radio-button>
             </mat-radio-group>
 
             <button mat-raised-button (click)="loadGame()">Start Game</button>

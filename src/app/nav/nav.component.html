@@ -1,9 +1,12 @@
 <mat-sidenav-container class="sidenav-conatiner">
   <mat-sidenav-content>
     <mat-toolbar color="primary">
-      <span style="margin-right: 10px">Uno</span>
-      <button mat-stroked-button routerLink='home'>Home</button>
-      <button mat-stroked-button routerLink='end'>Rules</button>
+      <mat-toolbar-row fxLayoutGap="10px">
+        <h1 style="margin-right: 10px">Uno</h1>
+        <button mat-stroked-button routerLink='home'>Home</button>
+        <button mat-stroked-button routerLink='rules'>Rules</button>
+        <button [disabled]="gameService.isNewGame()" mat-stroked-button routerLink='game'>Return to Game</button>
+      </mat-toolbar-row>
     </mat-toolbar>
 
     <router-outlet></router-outlet>

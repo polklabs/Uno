@@ -1,6 +1,6 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
-import { Deck, Hand } from 'src/app/shared/assets/piles';
-import { Card, COLOR } from 'src/app/shared/assets/card';
+import { Deck, Hand } from 'src/app/models/piles';
+import { Card, COLOR } from 'src/app/models/card';
 
 @Component({
   selector: 'app-game-board',

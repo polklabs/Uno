@@ -74,8 +74,6 @@ export class Deck{
     }
 
     shuffle(){
-        console.log("Shuffling Cards.");
-
         let currentIndex = this.cards.length;
         let tempValue: Card;
         let randomIndex: number;

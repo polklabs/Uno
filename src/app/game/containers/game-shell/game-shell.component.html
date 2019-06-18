@@ -1,7 +1,8 @@
 <app-game-board
   [deck]="gameService.getDeckLength()"
   [discard]="gameService.getLastCardInDiscard()"
-  [hands]="[gameService.getCardsInHand(0), gameService.getCardsInHand(1)]"
+  [hands]="gameService.getCardsInHand(0)"
+  [oppHand]="gameService.getCardsInHand(1).length"
   [validCards]="gameService.getValidCards()"
   [newColor]="gameService.getCurrentColor()"
   [message]="messages[gameService.getTurn()]"

@@ -12,6 +12,7 @@ export class GameBoardComponent {
   @Input() deck: number;
   @Input() discard: Card;
   @Input() hands: Card[];
+  @Input() oppHand: number;
 
   @Input() validCards: Card[];
   @Input() newColor: COLOR;

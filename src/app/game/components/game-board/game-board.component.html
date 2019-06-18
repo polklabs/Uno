@@ -4,15 +4,19 @@
     
     <!-- Opponent's hand -->
     <div fxLayout="row wrap" fxLayoutAlign="center" fxLayoutGap="10px">
-        <app-card *ngFor="let card of hands[1]"
+
+      <app-card [card]="hands[1][0]" [hidden]="true" [matBadge]="hands[1].length" matBadgeSize="large"></app-card>
+
+        <!--<app-card *ngFor="let card of hands[1]"
           [card]="card"
           [hidden]="true">
-        </app-card>
+        </app-card>-->
       </div>
 
     <!-- Draw and discard -->
     <div fxLayout fxLayoutAlign="center" fxLayoutGap="50px">
-      <mat-card class="playing-card" style="border: 3px solid" [style.border-color]="(validCards.length==0 && turn==0)?'orange':'white'" fxFlex="125px" (click)="drawCard()">Draw pile:<br>{{deck}} cards</mat-card>
+      <mat-card class="playing-card" style="border: 3px solid" [style.border-color]="(validCards.length==0 && turn==0)?'orange':'white'" fxFlex="125px" (click)="drawCard()" 
+        [matBadge]="deck" matBadgePosition="below before" matBadgeSize="large">Draw pile</mat-card>
       <app-card [card]="discard" [color]="newColor"></app-card>
     </div>
     <h2 *ngIf="ended == -1">{{message}}</h2>

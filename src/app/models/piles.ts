@@ -36,31 +36,37 @@ export class Deck{
 
             //Two of all other numbers
             for(var i = 1; i < 10; i++){
+                let card = new Card(TYPE.NORM, i, color);
                 for(var j = 0; j < 2; j++){
-                    this.cards.push(new Card(TYPE.NORM, i, color));
+                    this.cards.push(card);
                 }
             }
 
+            let card = new Card(TYPE.SKIP, -1, color);
             for(var j = 0; j < 2; j++){
-                this.cards.push(new Card(TYPE.SKIP, -1, color));
+                this.cards.push(card);
             }
 
+            card = new Card(TYPE.REVERSE, -2, color);
             for(var j = 0; j < 2; j++){
-                this.cards.push(new Card(TYPE.REVERSE, -2, color));
+                this.cards.push(card);
             }
 
+            card = new Card(TYPE.DRAW_TWO, -3, color);
             for(var j = 0; j < 2; j++){
-                this.cards.push(new Card(TYPE.DRAW_TWO, -3, color));
+                this.cards.push(card);
             }
 
         }
 
+        let card = new Card(TYPE.WILD, -4, null);
         for(var j = 0; j < 4; j++){
-            this.cards.push(new Card(TYPE.WILD, -4, null));
+            this.cards.push(card);
         }
 
+        card = new Card(TYPE.WILD_FOUR, -5, null);
         for(var j = 0; j < 4; j++){
-            this.cards.push(new Card(TYPE.WILD_FOUR, -5, null));
+            this.cards.push(card);
         }
 
     }
